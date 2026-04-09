@@ -4,6 +4,7 @@ import sereneseasons.api.season.ISeasonState;
 import sereneseasons.api.season.Season;
 import sereneseasons.api.season.SeasonHelper;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -39,7 +40,7 @@ public class SeasonAccessChecker {
             return false;
         }
 
-        ISeasonState seasonInfo = SeasonHelper.getSeasonState(level);
+        ISeasonState seasonInfo = getSeasonState(level);
         Season season = seasonInfo.getSeason();
         Season.SubSeason currentSubSeason = seasonInfo.getSubSeason();
         int currentDayOfSeason = getDayOfSeason(seasonInfo);
@@ -53,6 +54,10 @@ public class SeasonAccessChecker {
         RanchFestivalMod.LOGGER.debug("Day check - Current: {}, Required: {}, Match: {}", currentDayOfSeason, definition.getDay(), isCorrectDay);
 
         return isCorrectSeason && isCorrectSubSeason && isCorrectDay;
+    }
+
+    public static ISeasonState getSeasonState(Level level) {
+        return SeasonHelper.getSeasonState(resolveSeasonLevel(level));
     }
 
     /**
@@ -71,7 +76,7 @@ public class SeasonAccessChecker {
         if (definition != null) {
             if (!DimensionAccessController.canEnterDimension(player, targetDimension, definition)) {
                 player.displayClientMessage(net.minecraft.network.chat.Component.literal(
-                    "当前季节不允许进入 " + definition.getStructureDimension().location() + "！未满足当前节日配置。"), true);
+                    "当前季节不允许进入 " + describeDimension(definition) + "！未满足当前节日配置。"), true);
                 event.setCanceled(true); // 阻止传送
             }
         }
@@ -98,7 +103,7 @@ public class SeasonAccessChecker {
     
 
     public static int getDayOfSeason(Level level) {
-        return getDayOfSeason(SeasonHelper.getSeasonState(level));
+        return getDayOfSeason(getSeasonState(level));
     }
 
     private static int getDayOfSeason(ISeasonState seasonInfo) {
@@ -135,5 +140,20 @@ public class SeasonAccessChecker {
         }
 
         return subSeasonDuration / dayDuration;
+    }
+
+    private static Level resolveSeasonLevel(Level level) {
+        if (level instanceof ServerLevel serverLevel) {
+            ServerLevel overworld = serverLevel.getServer().getLevel(Level.OVERWORLD);
+            if (overworld != null) {
+                return overworld;
+            }
+        }
+
+        return level;
+    }
+
+    private static String describeDimension(DimensionDefinition definition) {
+        return definition.getStructureDimension() == null ? "<unknown>" : definition.getStructureDimension().location().toString();
     }
 }

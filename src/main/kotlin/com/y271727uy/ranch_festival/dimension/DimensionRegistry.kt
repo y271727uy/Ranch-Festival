@@ -5,6 +5,7 @@ import java.util.LinkedHashSet
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
+import org.jetbrains.annotations.Nullable
 
 object DimensionRegistry {
     private val definitions: MutableSet<DimensionDefinition> = LinkedHashSet()
@@ -16,6 +17,7 @@ object DimensionRegistry {
     }
 
     @JvmStatic
+    @Nullable
     fun findByDimension(dimension: ResourceKey<Level>?): DimensionDefinition? {
         if (dimension == null) {
             return null
@@ -25,6 +27,7 @@ object DimensionRegistry {
     }
 
     @JvmStatic
+    @Nullable
     fun findByInvitation(itemStack: ItemStack?): DimensionDefinition? {
         if (itemStack == null || itemStack.isEmpty) {
             return null

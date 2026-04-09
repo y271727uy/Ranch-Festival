@@ -1,12 +1,14 @@
 package com.y271727uy.ranch_festival.dimension;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import java.util.Objects;
 
 @ParametersAreNonnullByDefault
@@ -52,6 +54,36 @@ public final class DimensionTeleporter {
                 serverPlayer.getXRot()
         );
         return InteractionResultHolder.success(itemStack);
+    }
+
+    public static boolean returnToOverworldSpawn(ServerPlayer serverPlayer, Component message) {
+        if (serverPlayer.getServer() == null) {
+            serverPlayer.displayClientMessage(message, false);
+            return false;
+        }
+
+        ServerLevel overworld = serverPlayer.getServer().getLevel(Level.OVERWORLD);
+        if (overworld == null) {
+            serverPlayer.displayClientMessage(
+                    Component.literal("主世界未加载，无法将你传回出生点"),
+                    false
+            );
+            return false;
+        }
+
+        BlockPos spawn = overworld.getSharedSpawnPos();
+        serverPlayer.teleportTo(
+                overworld,
+                spawn.getX() + 0.5D,
+                spawn.getY() + 1.0D,
+                spawn.getZ() + 0.5D,
+                serverPlayer.getYRot(),
+                serverPlayer.getXRot()
+        );
+
+        serverPlayer.displayClientMessage(message, false);
+
+        return true;
     }
 }
 
