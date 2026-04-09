@@ -1,0 +1,10 @@
+{
+  "item.ranch_festival.test_item": "Test Item",
+  "item.ranch_festival.text_invitation": "Text Invitation",
+  "item.ranch_festival.test_item.chinese": "测试物品",
+  "ranch_festival.config.season_access.title": "Season Access Settings",
+  "ranch_festival.config.season_access.enableSeasonDimensionLock": "Enable Season Dimension Lock",
+  "ranch_festival.config.season_access.requiredSeason": "Required Season",
+  "ranch_festival.config.season_access.requiredSubSeason": "Required Sub-Season",
+  "ranch_festival.config.season_access.requiredDayOfSeason": "Required Day of Season"
+}

@@ -1,0 +1,32 @@
+做什么??
+自然是节日
+
+怎么实现?
+1.总得想办法，什么时候禁止入内什么时候允许入内
+1.1 通过静谧四季的api去获取季节 子季节 日期
+1.2 正确的季节正确的日期 允许进入
+1.3 怎么进入？用什么进入？到时间了怎么办?要不要单程还是往返?
+1.4 去你妈的copilot
+
+2.
+Serene Seasons 模组通常在 sereneseasons.api.season 包下提供 API。常见的 API 包括：
+SeasonASMHelper 或 SeasonHelper 类，提供静态方法来获取当前季节状态
+SeasonTime 类，代表一个时间点的季节信息
+SubSeason 枚举，表示早/中/晚春、夏、秋、冬
+Season 枚举，表示春夏秋冬四季
+常见的获取季节信息的方法有：
+getClientSeason() - 获取客户端的季节状态
+getServerSeason() - 获取服务器的季节状态
+getCurrentSubSeason() - 获取当前子季节
+getDayOfSeason() - 获取当前季节的第几天  
+
+情报应该是真的
+
+3.
+3.1 getServerSeason() 获取服务器的季节状态
+3.2 getCurrentSubSeason() - 获取当前子季节
+3.3 getDayOfSeason() - 获取当前季节的第几天 
+3.4 如果是正确的日期+季节，则允许进入
+3.5 玩家使用道具进入场景
+3.6 节日场景禁止破坏方块 创造除外
+3.7 剩下的破事就是注册维度搭建场景，然后没了

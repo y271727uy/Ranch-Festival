@@ -1,0 +1,9 @@
+{
+  "item.ranch_festival.test_item": "测试物品",
+  "item.ranch_festival.text_invitation": "测试邀请函",
+  "ranch_festival.config.season_access.title": "季节访问设置",
+  "ranch_festival.config.season_access.enableSeasonDimensionLock": "启用季节维度锁定",
+  "ranch_festival.config.season_access.requiredSeason": "需要季节",
+  "ranch_festival.config.season_access.requiredSubSeason": "需要子季节",
+  "ranch_festival.config.season_access.requiredDayOfSeason": "需要季节第几天"
+}
