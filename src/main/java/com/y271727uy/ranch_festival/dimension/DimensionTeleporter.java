@@ -1,5 +1,6 @@
 package com.y271727uy.ranch_festival.dimension;
 
+import com.y271727uy.ranch_festival.season.FestivalStayState;
 import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -56,10 +57,10 @@ public final class DimensionTeleporter {
         return InteractionResultHolder.success(itemStack);
     }
 
-    public static boolean returnToOverworldSpawn(ServerPlayer serverPlayer, Component message) {
+    public static void returnToOverworldSpawn(ServerPlayer serverPlayer, Component message) {
         if (serverPlayer.getServer() == null) {
             serverPlayer.displayClientMessage(message, false);
-            return false;
+            return;
         }
 
         ServerLevel overworld = serverPlayer.getServer().getLevel(Level.OVERWORLD);
@@ -68,7 +69,7 @@ public final class DimensionTeleporter {
                     Component.literal("主世界未加载，无法将你传回出生点"),
                     false
             );
-            return false;
+            return;
         }
 
         BlockPos spawn = overworld.getSharedSpawnPos();
@@ -81,9 +82,8 @@ public final class DimensionTeleporter {
                 serverPlayer.getXRot()
         );
 
+        FestivalStayState.clear(serverPlayer);
         serverPlayer.displayClientMessage(message, false);
-
-        return true;
     }
 }
 
