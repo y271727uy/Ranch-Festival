@@ -13,7 +13,6 @@ import net.minecraft.world.level.Level;
 import sereneseasons.api.season.ISeasonState;
 import sereneseasons.api.season.Season;
 import sereneseasons.api.season.SeasonHelper;
-import java.util.Objects;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -22,12 +21,16 @@ public final class DimensionHandler {
     }
 
     public static InteractionResultHolder<ItemStack> handleUse(Level world, Player player, InteractionHand hand) {
-        return handleUse(world, player, hand, DimensionDefinition.TEST);
+        return handleUse(world, player, hand, DimensionRegistry.findByInvitation(player.getItemInHand(hand)));
     }
 
     public static InteractionResultHolder<ItemStack> handleUse(Level world, Player player, InteractionHand hand, DimensionDefinition definition) {
-        Objects.requireNonNull(definition, "definition");
         ItemStack itemStack = player.getItemInHand(hand);
+
+        if (definition == null) {
+            player.displayClientMessage(Component.literal("✗ 这个物品还没有绑定可进入的维度配置"), false);
+            return InteractionResultHolder.fail(itemStack);
+        }
 
         if (world.isClientSide) {
             return InteractionResultHolder.success(itemStack);

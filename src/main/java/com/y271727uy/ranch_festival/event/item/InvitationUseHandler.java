@@ -1,7 +1,7 @@
 package com.y271727uy.ranch_festival.event.item;
 
 import com.y271727uy.ranch_festival.RanchFestivalMod;
-import com.y271727uy.ranch_festival.dimension.DimensionDefinition;
+import com.y271727uy.ranch_festival.dimension.DimensionRegistry;
 import com.y271727uy.ranch_festival.dimension.DimensionHandler;
 import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -27,7 +27,7 @@ public final class InvitationUseHandler {
 
         Player player = event.getEntity();
         ItemStack stack = event.getItemStack();
-        DimensionDefinition definition = DimensionDefinition.findByInvitation(stack);
+        var definition = DimensionRegistry.findByInvitation(stack);
         if (definition == null) {
             return;
         }

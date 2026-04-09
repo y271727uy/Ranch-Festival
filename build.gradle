@@ -3,6 +3,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'net.neoforged.moddev.legacyforge' version '2.0.91'
+    id 'org.jetbrains.kotlin.jvm' version '2.1.20'
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -17,8 +18,9 @@ tasks.named('wrapper', Wrapper).configure {
 version = mod_version
 group = mod_group_id
 
-repositories {repositories {
+ repositories {
     mavenLocal()
+    mavenCentral()
 
     maven { // JEI
         name = "Jared's Maven"
@@ -54,8 +56,6 @@ repositories {repositories {
     }
 }
 
-    mavenLocal()
-}
 
 base {
     archivesName = mod_id
@@ -65,6 +65,9 @@ base {
 
 // Mojang ships Java 17 to end users in 1.20.1, so mods should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+kotlin {
+    jvmToolchain(17)
+}
 
 legacyForge {
     // Specify the version of MinecraftForge to use.
@@ -224,6 +227,12 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+    }
 }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.

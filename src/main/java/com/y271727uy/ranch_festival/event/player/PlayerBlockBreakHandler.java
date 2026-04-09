@@ -2,6 +2,7 @@ package com.y271727uy.ranch_festival.event.player;
 
 import com.y271727uy.ranch_festival.RanchFestivalMod;
 import com.y271727uy.ranch_festival.dimension.DimensionDefinition;
+import com.y271727uy.ranch_festival.dimension.DimensionRegistry;
 import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,7 +27,7 @@ public final class PlayerBlockBreakHandler {
             return;
         }
 
-        DimensionDefinition definition = DimensionDefinition.findByDimension(player.serverLevel().dimension());
+        DimensionDefinition definition = DimensionRegistry.findByDimension(player.serverLevel().dimension());
         if (definition == null || !Boolean.FALSE.equals(definition.getSurvivalPlayerDestroy())) {
             return;
         }

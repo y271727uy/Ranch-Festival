@@ -16,7 +16,7 @@ public final class DimensionAccessController {
     }
 
     public static boolean isManagedDimension(ResourceKey<Level> targetDimension) {
-        return isManagedDimension(targetDimension, DimensionDefinition.TEST);
+        return DimensionRegistry.findByDimension(targetDimension) != null;
     }
 
     public static boolean isManagedDimension(ResourceKey<Level> targetDimension, DimensionDefinition definition) {
@@ -31,7 +31,7 @@ public final class DimensionAccessController {
      * @return true 如果允许进入，false 否则
      */
     public static boolean canEnterDimension(Entity entity, ResourceKey<Level> targetDimension) {
-        return canEnterDimension(entity, targetDimension, DimensionDefinition.TEST);
+        return canEnterDimension(entity, targetDimension, DimensionRegistry.findByDimension(targetDimension));
     }
 
     public static boolean canEnterDimension(Entity entity, ResourceKey<Level> targetDimension, DimensionDefinition definition) {

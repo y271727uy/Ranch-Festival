@@ -13,6 +13,7 @@ import com.y271727uy.ranch_festival.RanchFestivalMod;
 import com.y271727uy.ranch_festival.Config;
 import com.y271727uy.ranch_festival.dimension.DimensionAccessController;
 import com.y271727uy.ranch_festival.dimension.DimensionDefinition;
+import com.y271727uy.ranch_festival.dimension.DimensionRegistry;
 
 /**
  * 季节访问检查器，用于控制玩家在特定季节和日期进入维度
@@ -26,7 +27,7 @@ public class SeasonAccessChecker {
      * @return true如果允许进入，false否则
      */
     public static boolean isTestDimensionAccessAllowed(Level level) {
-        return isDimensionAccessAllowed(level, DimensionDefinition.TEST);
+        return isDimensionAccessAllowed(level, DimensionRegistry.findByDimension(level.dimension()));
     }
 
     public static boolean isDimensionAccessAllowed(Level level, DimensionDefinition definition) {
@@ -66,7 +67,7 @@ public class SeasonAccessChecker {
 
         // 检查是否试图进入受季节控制的节日维度
         ResourceKey<Level> targetDimension = event.getDimension();
-        DimensionDefinition definition = DimensionDefinition.findByDimension(targetDimension);
+        DimensionDefinition definition = DimensionRegistry.findByDimension(targetDimension);
         if (definition != null) {
             if (!DimensionAccessController.canEnterDimension(player, targetDimension, definition)) {
                 player.displayClientMessage(net.minecraft.network.chat.Component.literal(

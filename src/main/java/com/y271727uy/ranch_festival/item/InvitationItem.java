@@ -1,6 +1,5 @@
 package com.y271727uy.ranch_festival.item;
 
-import com.y271727uy.ranch_festival.dimension.DimensionDefinition;
 import com.y271727uy.ranch_festival.dimension.DimensionHandler;
 import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -20,16 +19,7 @@ public class InvitationItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-        ItemStack itemStack = player.getItemInHand(hand);
-        DimensionDefinition definition = DimensionDefinition.findByInvitation(itemStack);
-        if (definition == null) {
-            player.displayClientMessage(
-                    net.minecraft.network.chat.Component.literal("✗ 这个邀请函还没有绑定节日维度配置"),
-                    false
-            );
-            return InteractionResultHolder.fail(itemStack);
-        }
-        return DimensionHandler.handleUse(world, player, hand, definition);
+        return DimensionHandler.handleUse(world, player, hand);
     }
 }
 

@@ -2,6 +2,7 @@ package com.y271727uy.ranch_festival;
 
 import com.mojang.logging.LogUtils;
 import com.y271727uy.ranch_festival.all.ModItem;
+import com.y271727uy.ranch_festival.dimension.DimensionDefinitions;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -24,6 +25,9 @@ public class RanchFestivalMod {
         
         // Register items
         ModItem.register(modEventBus);
+
+        // Register dimension definitions
+        DimensionDefinitions.bootstrap();
 
         // Register config
         context.registerConfig(ModConfig.Type.COMMON, Config.SEASON_SPEC);

@@ -1,10 +1,8 @@
 package com.y271727uy.ranch_festival.dimension;
 
 import com.y271727uy.ranch_festival.RanchFestivalMod;
-import com.y271727uy.ranch_festival.all.ModItem;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -13,31 +11,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.RegistryObject;
 import sereneseasons.api.season.Season;
 
-@SuppressWarnings("unused")
 public final class DimensionDefinition {
-    private static final Set<DimensionDefinition> DEFINITIONS = new LinkedHashSet<>();
-
-    public static final DimensionDefinition TEST = create()
-            .Structure((ResourceLocation) null)
-            .StructureAxis(0, 64, 0)
-            .StructureDimension(ResourceKey.create(
-                    Registries.DIMENSION,
-                    ResourceLocation.fromNamespaceAndPath(RanchFestivalMod.MODID, "test")
-            ))
-            .PlayerInputAxis(0, 64, 0)
-            .Seasons(Season.SPRING)
-            .SubSeason(null)
-            .Day(2)
-            .SurvivalPlayerDestory(false)
-            .AutoReset(true)
-            .MobSpawn(false)
-            .invitation(ModItem.TEXT_INVITATION)
-            .register();
 
     private final ResourceLocation structure;
     private final BlockPos structureAxis;
@@ -67,38 +45,6 @@ public final class DimensionDefinition {
 
     public static Builder create() {
         return new Builder();
-    }
-
-    public static DimensionDefinition register(Builder builder) {
-        return register(builder.build());
-    }
-
-    public static DimensionDefinition register(DimensionDefinition definition) {
-        DEFINITIONS.add(definition);
-        return definition;
-    }
-
-    public static DimensionDefinition findByDimension(ResourceKey<Level> dimension) {
-        for (DimensionDefinition definition : DEFINITIONS) {
-            if (Objects.equals(definition.getStructureDimension(), dimension)) {
-                return definition;
-            }
-        }
-        return null;
-    }
-
-    public static DimensionDefinition findByInvitation(ItemStack itemStack) {
-        if (itemStack == null || itemStack.isEmpty()) {
-            return null;
-        }
-
-        Item item = itemStack.getItem();
-        for (DimensionDefinition definition : DEFINITIONS) {
-            if (definition.matchesInvitation(item)) {
-                return definition;
-            }
-        }
-        return null;
     }
 
     public ResourceLocation getStructure() {
@@ -271,7 +217,7 @@ public final class DimensionDefinition {
         }
 
         public DimensionDefinition register() {
-            return DimensionDefinition.register(build());
+            return DimensionRegistry.register(build());
         }
     }
 }

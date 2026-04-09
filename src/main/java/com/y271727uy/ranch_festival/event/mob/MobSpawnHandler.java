@@ -2,6 +2,7 @@ package com.y271727uy.ranch_festival.event.mob;
 
 import com.y271727uy.ranch_festival.RanchFestivalMod;
 import com.y271727uy.ranch_festival.dimension.DimensionDefinition;
+import com.y271727uy.ranch_festival.dimension.DimensionRegistry;
 import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.MobSpawnType;
@@ -18,7 +19,7 @@ public final class MobSpawnHandler {
 
     @SubscribeEvent
     public static void onMobSpawn(MobSpawnEvent.FinalizeSpawn event) {
-        DimensionDefinition definition = DimensionDefinition.findByDimension(event.getLevel().getLevel().dimension());
+        DimensionDefinition definition = DimensionRegistry.findByDimension(event.getLevel().getLevel().dimension());
         if (definition == null || Boolean.TRUE.equals(definition.getMobSpawn())) {
             return;
         }
