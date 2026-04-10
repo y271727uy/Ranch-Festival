@@ -5,6 +5,7 @@ import com.y271727uy.ranch_festival.dimension.DimensionDefinition;
 import com.y271727uy.ranch_festival.dimension.DimensionRegistry;
 import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -18,6 +19,7 @@ public final class PlayerBlockBreakHandler {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("resource")
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         if (!(event.getPlayer() instanceof ServerPlayer player)) {
             return;
@@ -33,7 +35,7 @@ public final class PlayerBlockBreakHandler {
         }
 
         event.setCanceled(true);
-        player.displayClientMessage(net.minecraft.network.chat.Component.literal("✗ 该维度禁止生存玩家破坏方块"), true);
+        player.displayClientMessage(Component.translatable("ranch_festival.message.block_break_denied"), true);
     }
 }
 

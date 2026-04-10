@@ -3,6 +3,7 @@ package com.y271727uy.ranch_festival.season;
 import sereneseasons.api.season.ISeasonState;
 import sereneseasons.api.season.Season;
 import sereneseasons.api.season.SeasonHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
@@ -27,6 +28,7 @@ public class SeasonAccessChecker {
      * 条件：根据配置确定
      * @return true如果允许进入，false否则
      */
+    @SuppressWarnings("unused")
     public static boolean isTestDimensionAccessAllowed(Level level) {
         return isDimensionAccessAllowed(level, DimensionRegistry.findByDimension(level.dimension()));
     }
@@ -60,6 +62,25 @@ public class SeasonAccessChecker {
         return SeasonHelper.getSeasonState(resolveSeasonLevel(level));
     }
 
+    @SuppressWarnings("unused")
+    public static int getTicksUntilDayEnds(Level level) {
+        if (!SeasonApiHelper.isSereneSeasonsLoaded()) {
+            return -1;
+        }
+
+        ISeasonState seasonInfo = getSeasonState(level);
+        int dayDuration = seasonInfo.getDayDuration();
+        int seasonCycleTicks = seasonInfo.getSeasonCycleTicks();
+
+        if (dayDuration <= 0 || seasonCycleTicks < 0) {
+            return -1;
+        }
+
+        int ticksIntoCurrentDay = seasonCycleTicks % dayDuration;
+        int ticksRemaining = dayDuration - ticksIntoCurrentDay;
+        return ticksRemaining > 0 ? ticksRemaining : dayDuration;
+    }
+
     /**
      * 检查玩家是否可以进入特定维度
      * @param event 维度传送事件
@@ -75,8 +96,10 @@ public class SeasonAccessChecker {
         DimensionDefinition definition = DimensionRegistry.findByDimension(targetDimension);
         if (definition != null) {
             if (!DimensionAccessController.canEnterDimension(player, targetDimension, definition)) {
-                player.displayClientMessage(net.minecraft.network.chat.Component.literal(
-                    "当前季节不允许进入 " + describeDimension(definition) + "！未满足当前节日配置。"), true);
+                player.displayClientMessage(
+                    Component.translatable("ranch_festival.message.dimension_season_locked", describeDimension(definition)),
+                    true
+                );
                 event.setCanceled(true); // 阻止传送
             }
         }
@@ -86,19 +109,22 @@ public class SeasonAccessChecker {
      * 获取当前季节信息的字符串描述
      * @return 季节信息描述
      */
+    @SuppressWarnings("unused")
     public static String getCurrentSeasonInfo() {
         if (!SeasonApiHelper.isSereneSeasonsLoaded()) {
-            return "Serene Seasons未安装或未加载";
+            return Component.translatable("ranch_festival.message.serene_seasons_unavailable").getString();
         }
 
         String currentSeason = SeasonApiHelper.getCurrentSeasonString();
         String currentSubSeason = SeasonApiHelper.getCurrentSubSeasonString();
         int currentDayOfSeason = SeasonApiHelper.getDayOfSeason();
 
-        return String.format("当前季节: %s, 子季节: %s, 季节第%d天", 
-                           currentSeason, 
-                           currentSubSeason, 
-                           currentDayOfSeason);
+        return Component.translatable(
+                "ranch_festival.message.current_season_info",
+                Component.translatable(seasonKey(currentSeason)),
+                Component.translatable(subSeasonKey(currentSubSeason)),
+                currentDayOfSeason
+        ).getString();
     }
     
 
@@ -154,6 +180,36 @@ public class SeasonAccessChecker {
     }
 
     private static String describeDimension(DimensionDefinition definition) {
-        return definition.getStructureDimension() == null ? "<unknown>" : definition.getStructureDimension().location().toString();
+        return definition.getStructureDimension() == null
+                ? Component.translatable("ranch_festival.message.unknown_dimension").getString()
+                : definition.getStructureDimension().location().toString();
+    }
+
+    private static String seasonKey(String seasonName) {
+        return switch (seasonName) {
+            case "SPRING" -> "ranch_festival.season.spring";
+            case "SUMMER" -> "ranch_festival.season.summer";
+            case "AUTUMN" -> "ranch_festival.season.autumn";
+            case "WINTER" -> "ranch_festival.season.winter";
+            default -> "ranch_festival.season.unknown";
+        };
+    }
+
+    private static String subSeasonKey(String subSeasonName) {
+        return switch (subSeasonName) {
+            case "EARLY_SPRING" -> "ranch_festival.subseason.early_spring";
+            case "MID_SPRING" -> "ranch_festival.subseason.mid_spring";
+            case "LATE_SPRING" -> "ranch_festival.subseason.late_spring";
+            case "EARLY_SUMMER" -> "ranch_festival.subseason.early_summer";
+            case "MID_SUMMER" -> "ranch_festival.subseason.mid_summer";
+            case "LATE_SUMMER" -> "ranch_festival.subseason.late_summer";
+            case "EARLY_AUTUMN" -> "ranch_festival.subseason.early_autumn";
+            case "MID_AUTUMN" -> "ranch_festival.subseason.mid_autumn";
+            case "LATE_AUTUMN" -> "ranch_festival.subseason.late_autumn";
+            case "EARLY_WINTER" -> "ranch_festival.subseason.early_winter";
+            case "MID_WINTER" -> "ranch_festival.subseason.mid_winter";
+            case "LATE_WINTER" -> "ranch_festival.subseason.late_winter";
+            default -> "ranch_festival.subseason.unknown";
+        };
     }
 }

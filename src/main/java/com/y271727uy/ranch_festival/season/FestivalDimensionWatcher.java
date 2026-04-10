@@ -87,7 +87,7 @@ public final class FestivalDimensionWatcher {
 
         DimensionTeleporter.returnToOverworldSpawn(
                 serverPlayer,
-                Component.literal("主世界这一天已经结束，已将你传回主世界。")
+                Component.translatable("ranch_festival.message.returned_to_overworld_spawn")
         );
     }
 }

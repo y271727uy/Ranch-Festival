@@ -15,6 +15,11 @@ import java.util.Objects;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public final class DimensionTeleporter {
+    private static final String KEY_DIMENSION_CONFIG_INCOMPLETE = "ranch_festival.message.dimension_config_incomplete";
+    private static final String KEY_SERVER_UNAVAILABLE = "ranch_festival.message.server_unavailable";
+    private static final String KEY_TARGET_DIMENSION_UNLOADED = "ranch_festival.message.target_dimension_unloaded";
+    private static final String KEY_OVERWORLD_UNLOADED = "ranch_festival.message.overworld_unloaded";
+
     private DimensionTeleporter() {
     }
 
@@ -23,7 +28,7 @@ public final class DimensionTeleporter {
 
         if (definition.getPlayerInputAxis() == null || definition.getStructureDimension() == null) {
             serverPlayer.displayClientMessage(
-                    Component.literal("✗ 该维度配置缺少目标坐标或目标维度"),
+                    Component.translatable(KEY_DIMENSION_CONFIG_INCOMPLETE),
                     false
             );
             return InteractionResultHolder.fail(itemStack);
@@ -31,7 +36,7 @@ public final class DimensionTeleporter {
 
         if (serverPlayer.getServer() == null) {
             serverPlayer.displayClientMessage(
-                    Component.literal("服务器实例不可用，无法传送"),
+                    Component.translatable(KEY_SERVER_UNAVAILABLE),
                     false
             );
             return InteractionResultHolder.fail(itemStack);
@@ -40,7 +45,7 @@ public final class DimensionTeleporter {
         ServerLevel targetLevel = serverPlayer.getServer().getLevel(definition.getStructureDimension());
         if (targetLevel == null) {
             serverPlayer.displayClientMessage(
-                    Component.literal("维度 " + definition.getStructureDimension().location() + " 未加载"),
+                    Component.translatable(KEY_TARGET_DIMENSION_UNLOADED, definition.getStructureDimension().location()),
                     false
             );
             return InteractionResultHolder.fail(itemStack);
@@ -66,7 +71,7 @@ public final class DimensionTeleporter {
         ServerLevel overworld = serverPlayer.getServer().getLevel(Level.OVERWORLD);
         if (overworld == null) {
             serverPlayer.displayClientMessage(
-                    Component.literal("主世界未加载，无法将你传回出生点"),
+                    Component.translatable(KEY_OVERWORLD_UNLOADED),
                     false
             );
             return;
@@ -86,4 +91,3 @@ public final class DimensionTeleporter {
         serverPlayer.displayClientMessage(message, false);
     }
 }
-
