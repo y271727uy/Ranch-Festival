@@ -98,7 +98,7 @@ public class SeasonAccessChecker {
         if (definition != null) {
             if (!DimensionAccessController.canEnterDimension(player, targetDimension, definition)) {
                 player.displayClientMessage(
-                    Component.translatable("ranch_festival.message.dimension_season_locked", describeDimension(definition)),
+                    Component.translatable("ranch_festival.message.dimension_season_locked", definition.getDimensionDisplayName()),
                     true
                 );
                 event.setCanceled(true); // 阻止传送
@@ -181,11 +181,6 @@ public class SeasonAccessChecker {
         return level;
     }
 
-    private static String describeDimension(DimensionDefinition definition) {
-        return definition.getStructureDimension() == null
-                ? Component.translatable("ranch_festival.message.unknown_dimension").getString()
-                : definition.getStructureDimension().location().toString();
-    }
 
     private static String seasonKey(String seasonName) {
         return switch (seasonName) {

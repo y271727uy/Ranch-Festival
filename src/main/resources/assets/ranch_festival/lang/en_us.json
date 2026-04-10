@@ -26,6 +26,7 @@
   "ranch_festival.message.serene_seasons_unavailable": "Serene Seasons is not installed or not loaded.",
   "ranch_festival.message.current_season_info": "Current season: %s, sub-season: %s, day %s of the season",
   "ranch_festival.message.unknown_dimension": "<unknown>",
+  "ranch_festival.dimension.test": "Test Festival",
   "ranch_festival.festival.test": "Test Festival",
   "ranch_festival.season.spring": "Spring",
   "ranch_festival.season.summer": "Summer",

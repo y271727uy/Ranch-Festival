@@ -21,6 +21,7 @@ val TEST: DimensionDefinition = dimensionDefinition {
     seasons(Season.SPRING)
     subSeason(null)
     day(2)
+    dimensionName("ranch_festival.dimension.test")
     festivalName("ranch_festival.festival.test")
     survivalPlayerDestroy(false)
     autoReset(true)

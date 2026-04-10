@@ -20,15 +20,14 @@ public final class DimensionHandler {
 
     public static InteractionResultHolder<ItemStack> handleUse(Level world, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
-        Object maybeDefinition = DimensionRegistry.findByInvitation(itemStack);
+        DimensionDefinition maybeDefinition = DimensionRegistry.findByInvitation(itemStack);
 
         if (maybeDefinition == null) {
             player.displayClientMessage(Component.translatable("ranch_festival.message.invitation_unbound"), false);
             return InteractionResultHolder.fail(itemStack);
         }
 
-        DimensionDefinition definition = (DimensionDefinition) maybeDefinition;
-        return handleUse(world, player, hand, definition);
+        return handleUse(world, player, hand, maybeDefinition);
     }
 
     public static InteractionResultHolder<ItemStack> handleUse(Level world, Player player, InteractionHand hand, DimensionDefinition definition) {
@@ -48,7 +47,7 @@ public final class DimensionHandler {
 
         if (!accessAllowed) {
             player.displayClientMessage(
-                    Component.translatable("ranch_festival.message.dimension_season_locked", describeDimension(definition)),
+                    Component.translatable("ranch_festival.message.dimension_season_locked", definition.getDimensionDisplayName()),
                     false
             );
             return InteractionResultHolder.success(itemStack);
@@ -71,17 +70,12 @@ public final class DimensionHandler {
                         accessAllowed
                                 ? "ranch_festival.message.season_info.access_allowed"
                                 : "ranch_festival.message.season_info.access_denied",
-                        describeDimension(definition)
+                        definition.getDimensionDisplayName()
                 ),
                 false
         );
     }
 
-    private static String describeDimension(DimensionDefinition definition) {
-        return definition.getStructureDimension() == null
-                ? Component.translatable("ranch_festival.message.unknown_dimension").getString()
-                : definition.getStructureDimension().location().toString();
-    }
 
     private static String seasonKey(Season season) {
         return switch (season) {
@@ -89,7 +83,6 @@ public final class DimensionHandler {
             case SUMMER -> "ranch_festival.season.summer";
             case AUTUMN -> "ranch_festival.season.autumn";
             case WINTER -> "ranch_festival.season.winter";
-            default -> "ranch_festival.season.unknown";
         };
     }
 

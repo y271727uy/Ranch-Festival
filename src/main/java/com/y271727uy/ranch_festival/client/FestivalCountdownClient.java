@@ -15,11 +15,12 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = RanchFestivalMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public final class FestivalCountdownClient {
     private static final String KEY_FESTIVAL_COUNTDOWN = "ranch_festival.message.festival_countdown";
-    private static final long FESTIVAL_HINT_DURATION_TICKS = 20L * 20L;
+    private static final long FESTIVAL_HINT_DURATION_TICKS = 20L * 10L;
 
     private static int remainingSeconds = -1;
     private static long festivalHintVisibleUntil = -1L;
     private static String festivalHintKey;
+    private static String lastFestivalSoundKey;
     private static Component festivalHintMessage;
 
     private FestivalCountdownClient() {
@@ -50,7 +51,6 @@ public final class FestivalCountdownClient {
 
         FestivalTodayHintState hint = FestivalTodayHint.resolveTodayFestivalHint(level);
         if (hint == null) {
-            clearFestivalHint();
             return;
         }
 
@@ -59,7 +59,8 @@ public final class FestivalCountdownClient {
             festivalHintKey = hint.getKey();
             festivalHintMessage = hint.getMessage();
             festivalHintVisibleUntil = now + FESTIVAL_HINT_DURATION_TICKS;
-            if (minecraft.player != null) {
+            if (!hint.getKey().equals(lastFestivalSoundKey) && minecraft.player != null) {
+                lastFestivalSoundKey = hint.getKey();
                 minecraft.player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
             }
             return;

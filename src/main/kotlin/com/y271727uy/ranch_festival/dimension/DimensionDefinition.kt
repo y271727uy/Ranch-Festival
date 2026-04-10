@@ -6,6 +6,7 @@ import java.util.LinkedHashSet
 import java.util.Objects
 import java.util.function.Supplier
 import net.minecraft.core.BlockPos
+import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
@@ -22,6 +23,7 @@ class DimensionDefinition private constructor(builder: Builder) {
     val seasons: Set<Season>? = builder.seasonsValue
     val subSeason: Season.SubSeason? = builder.subSeasonValue
     val day: Int? = builder.dayValue
+    val dimensionNameKey: String? = builder.dimensionNameKeyValue
     val festivalNameKey: String? = builder.festivalNameKeyValue
     val survivalPlayerDestroy: Boolean? = builder.survivalPlayerDestroyValue
     val autoReset: Boolean? = builder.autoResetValue
@@ -44,6 +46,21 @@ class DimensionDefinition private constructor(builder: Builder) {
 
     fun matchesDay(currentDay: Int): Boolean {
         return day == null || day == currentDay
+    }
+
+    @Suppress("unused")
+    fun getDimensionDisplayName(): Component {
+        val key = dimensionNameKey ?: festivalNameKey
+        if (!key.isNullOrBlank()) {
+            return Component.translatable(key)
+        }
+
+        val dimensionId = structureDimension?.location()?.toString()
+        return if (!dimensionId.isNullOrBlank()) {
+            Component.literal(dimensionId)
+        } else {
+            Component.translatable("ranch_festival.message.unknown_dimension")
+        }
     }
 
     fun resolveStructureClearBounds(level: ServerLevel, padding: Int = 3): StructureClearBounds? {
@@ -82,6 +99,7 @@ class DimensionDefinition private constructor(builder: Builder) {
         var seasonsValue: Set<Season>? = null
         var subSeasonValue: Season.SubSeason? = null
         var dayValue: Int? = null
+        var dimensionNameKeyValue: String? = null
         var festivalNameKeyValue: String? = null
         var survivalPlayerDestroyValue: Boolean? = null
         var autoResetValue: Boolean? = null
@@ -135,6 +153,12 @@ class DimensionDefinition private constructor(builder: Builder) {
         fun day(day: Int?): Builder = apply {
             dayValue = day
         }
+
+        fun dimensionName(dimensionNameKey: String?): Builder = apply {
+            dimensionNameKeyValue = dimensionNameKey
+        }
+
+        fun dimensionNameKey(dimensionNameKey: String?): Builder = dimensionName(dimensionNameKey)
 
         fun festivalName(festivalNameKey: String?): Builder = apply {
             festivalNameKeyValue = festivalNameKey
