@@ -64,7 +64,8 @@ public class SeasonAccessChecker {
 
     @SuppressWarnings("unused")
     public static int getTicksUntilDayEnds(Level level) {
-        if (!SeasonApiHelper.isSereneSeasonsLoaded()) {
+        boolean sereneSeasonsLoaded = SeasonApiHelper.hasSereneSeasons();
+        if (!sereneSeasonsLoaded) {
             return -1;
         }
 
@@ -111,7 +112,8 @@ public class SeasonAccessChecker {
      */
     @SuppressWarnings("unused")
     public static String getCurrentSeasonInfo() {
-        if (!SeasonApiHelper.isSereneSeasonsLoaded()) {
+        boolean sereneSeasonsLoaded = SeasonApiHelper.hasSereneSeasons();
+        if (!sereneSeasonsLoaded) {
             return Component.translatable("ranch_festival.message.serene_seasons_unavailable").getString();
         }
 

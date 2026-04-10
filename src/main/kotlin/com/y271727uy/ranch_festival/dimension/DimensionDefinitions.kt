@@ -21,6 +21,7 @@ val TEST: DimensionDefinition = dimensionDefinition {
     seasons(Season.SPRING)
     subSeason(null)
     day(2)
+    festivalName("ranch_festival.festival.test")
     survivalPlayerDestroy(false)
     autoReset(true)
     mobSpawn(false)
@@ -28,8 +29,5 @@ val TEST: DimensionDefinition = dimensionDefinition {
 }.register()
 
 fun bootstrap() {
-    // 触发文件级初始化，确保静态定义完成注册。
+    // Trigger file-level initialization to ensure static definitions are registered.
 }
-
-
-

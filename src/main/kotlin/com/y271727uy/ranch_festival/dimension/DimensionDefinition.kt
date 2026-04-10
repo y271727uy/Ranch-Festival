@@ -8,6 +8,7 @@ import java.util.function.Supplier
 import net.minecraft.core.BlockPos
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.Level
 import net.minecraftforge.registries.RegistryObject
@@ -21,6 +22,7 @@ class DimensionDefinition private constructor(builder: Builder) {
     val seasons: Set<Season>? = builder.seasonsValue
     val subSeason: Season.SubSeason? = builder.subSeasonValue
     val day: Int? = builder.dayValue
+    val festivalNameKey: String? = builder.festivalNameKeyValue
     val survivalPlayerDestroy: Boolean? = builder.survivalPlayerDestroyValue
     val autoReset: Boolean? = builder.autoResetValue
     val mobSpawn: Boolean? = builder.mobSpawnValue
@@ -44,11 +46,34 @@ class DimensionDefinition private constructor(builder: Builder) {
         return day == null || day == currentDay
     }
 
+    fun resolveStructureClearBounds(level: ServerLevel, padding: Int = 3): StructureClearBounds? {
+        val origin = structureAxis ?: return null
+        val structureId = structure ?: return null
+        val template = level.structureManager.getOrCreate(structureId)
+        val size = template.size
+        val extra = padding.coerceAtLeast(0)
+        val farCorner = origin.offset(size.x - 1, size.y - 1, size.z - 1)
+
+        return StructureClearBounds(
+            BlockPos(
+                minOf(origin.x, farCorner.x) - extra,
+                minOf(origin.y, farCorner.y) - extra,
+                minOf(origin.z, farCorner.z) - extra
+            ),
+            BlockPos(
+                maxOf(origin.x, farCorner.x) + extra,
+                maxOf(origin.y, farCorner.y) + extra,
+                maxOf(origin.z, farCorner.z) + extra
+            )
+        )
+    }
+
     companion object {
         @JvmStatic
         fun create(): Builder = Builder()
     }
 
+    @Suppress("unused")
     class Builder {
         var structureValue: ResourceLocation? = null
         var structureAxisValue: BlockPos? = null
@@ -57,6 +82,7 @@ class DimensionDefinition private constructor(builder: Builder) {
         var seasonsValue: Set<Season>? = null
         var subSeasonValue: Season.SubSeason? = null
         var dayValue: Int? = null
+        var festivalNameKeyValue: String? = null
         var survivalPlayerDestroyValue: Boolean? = null
         var autoResetValue: Boolean? = null
         var mobSpawnValue: Boolean? = null
@@ -110,6 +136,12 @@ class DimensionDefinition private constructor(builder: Builder) {
             dayValue = day
         }
 
+        fun festivalName(festivalNameKey: String?): Builder = apply {
+            festivalNameKeyValue = festivalNameKey
+        }
+
+        fun festivalNameKey(festivalNameKey: String?): Builder = festivalName(festivalNameKey)
+
         fun survivalPlayerDestory(survivalPlayerDestroy: Boolean?): Builder = apply {
             survivalPlayerDestroyValue = survivalPlayerDestroy
         }
@@ -142,6 +174,4 @@ fun dimensionDefinition(block: DimensionDefinition.Builder.() -> Unit): Dimensio
     return DimensionDefinition.create().apply(block)
 }
 
-
-
-
+data class StructureClearBounds(val start: BlockPos, val end: BlockPos)

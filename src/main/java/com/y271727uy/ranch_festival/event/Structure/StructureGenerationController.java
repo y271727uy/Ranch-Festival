@@ -3,6 +3,7 @@ package com.y271727uy.ranch_festival.event.Structure;
 import com.y271727uy.ranch_festival.RanchFestivalMod;
 import com.y271727uy.ranch_festival.dimension.DimensionDefinition;
 import com.y271727uy.ranch_festival.dimension.DimensionRegistry;
+import com.y271727uy.ranch_festival.dimension.StructureClearBounds;
 import com.y271727uy.ranch_festival.season.SeasonAccessChecker;
 import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -33,8 +34,9 @@ public final class StructureGenerationController {
         );
 
         BlockPos origin = definition.getStructureAxis();
+        StructureClearBounds clearBounds = definition.resolveStructureClearBounds(serverLevel, 3);
         if (Boolean.TRUE.equals(definition.getAutoReset()) && data.generated && !SeasonAccessChecker.isDimensionAccessAllowed(serverLevel, definition)) {
-            clearArea(serverLevel, origin.offset(-3, 0, -3), origin.offset(3, 5, 3));
+            clearArea(serverLevel, clearBounds != null ? clearBounds.getStart() : origin.offset(-3, 0, -3), clearBounds != null ? clearBounds.getEnd() : origin.offset(3, 5, 3));
             data.generated = false;
             data.setDirty();
             RanchFestivalMod.LOGGER.info("Auto-reset fixed structure in {} at {}", describeDimension(definition), origin);
@@ -45,7 +47,7 @@ public final class StructureGenerationController {
             return;
         }
 
-        clearArea(serverLevel, origin.offset(-3, 0, -3), origin.offset(3, 5, 3));
+        clearArea(serverLevel, clearBounds != null ? clearBounds.getStart() : origin.offset(-3, 0, -3), clearBounds != null ? clearBounds.getEnd() : origin.offset(3, 5, 3));
 
         if (!StructureTemplatePlacer.tryPlace(serverLevel, definition)) {
             generateFallbackStructure(serverLevel, origin);

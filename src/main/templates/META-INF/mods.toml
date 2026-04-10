@@ -46,3 +46,10 @@ description='''${mod_description}'''
     ordering="NONE"
     side="BOTH"
 
+[[dependencies.ranch_festival]]
+
+    modId="sereneseasons"
+    mandatory=true
+    versionRange="*"
+    ordering="AFTER"
+    side="BOTH"
