@@ -29,6 +29,7 @@ val TEST: DimensionDefinition = dimensionDefinition {
     invitation(ModItem.TEXT_INVITATION)
 }.register()
 
+
 fun bootstrap() {
     // Trigger file-level initialization to ensure static definitions are registered.
 }
